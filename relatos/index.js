@@ -1,0 +1,29 @@
+const express = require('express')
+const { v4: uuidv4 } = require('uuid')
+const app = express()
+app.use(express.json())
+
+const relatosPorAvistamentoId = {}
+
+app.post("/avistamentos/:id/relatos", (req, res) => {
+    const { texto } = req.body
+    const id = req.params.id
+
+    const relato = {
+        id: uuidv4(),
+        texto: texto,
+        confirmacoes: 0
+    }
+
+    const relatosDoAvistamento = relatosPorAvistamentoId[req.params.id] || []
+    relatosDoAvistamento.push(relato)
+    relatosPorAvistamentoId[req.params.id] = relatosDoAvistamento
+    res.status(201).json(relatosDoAvistamento)
+})
+
+app.get("/avistamentos/:id/relatos", function(req, res) {
+    res.json(relatosPorAvistamentoId[req.params.id] || [])
+})
+
+const port = 4100
+app.listen(port, () => console.log(`Relatos. Porta 4100.`))
