@@ -32,5 +32,11 @@ app.get("/avistamentos", function(req, res) {
     res.json(avistamentos)
 })
 
+app.post('/eventos', (req, res) => {
+    const evento = req.body
+    console.log(evento.tipo)
+    res.status(200).send({msg: 'ok' })
+})
+
 const port = 4000
 app.listen(port, () => console.log(`Avistamentos. Porta ${port}.`))

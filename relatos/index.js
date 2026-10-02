@@ -25,5 +25,11 @@ app.get("/avistamentos/:id/relatos", function(req, res) {
     res.json(relatosPorAvistamentoId[req.params.id] || [])
 })
 
+app.post('/eventos', (req, res) => {
+    const evento = req.body
+    console.log(evento.tipo)
+    res.status(200).send({msg: 'ok' })
+})
+
 const port = 4100
 app.listen(port, () => console.log(`Relatos. Porta 4100.`))
