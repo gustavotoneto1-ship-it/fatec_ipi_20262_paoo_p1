@@ -13,11 +13,29 @@ const funcoes = {
         const relatos = baseConsulta[relato.avistamentoId]['relatos'] || []
         relatos.push(relato)
         baseConsulta[relato.avistamentoId]['relatos'] = relatos
+    },
+    RelatoConfirmado: (dados) => {
+        const relatos = baseConsulta[dados.avistamentoId]['relatos']
+        for (let i = 0; i < relatos.length; i++) {
+            if (relatos[i].id === dados.id) {
+                relatos[i].confirmacoes = dados.confirmacoes
+            }
+        }
     }
 }
 
 app.get('/avistamentos', (req, res) => {
     res.json(baseConsulta)
+})
+
+app.get('/avistamentos/:id', (req, res) => {
+    const avistamento = baseConsulta[req.params.id]
+
+    if (avistamento === undefined) {
+        return res.status(404).send({ erro: "avistamento não encontrado" })
+    }
+
+    res.json(avistamento)
 })
 
 app.post('/eventos', function(req, res) {

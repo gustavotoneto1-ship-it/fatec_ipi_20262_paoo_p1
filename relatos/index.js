@@ -36,5 +36,34 @@ app.post('/eventos', (req, res) => {
     res.status(200).send({msg: 'ok' })
 })
 
+app.post('/avistamentos/:id/relatos/:idRelato/confirmacoes', async (req, res) => {
+    const relatos = relatosPorAvistamentoId[req.params.id]
+
+    if (relatos === undefined) {
+        return res.status(404).send({  erro: "relato não encontrado"  })
+    }
+
+    let relato = undefined
+    for (let i = 0; i < relatos.length; i++) {
+        if (relatos[i].id === req.params.idRelato) {
+            relato = relatos[i]
+        }
+    }
+    if (relato === undefined) {
+        return res.status(404).send({ erro: "relato não encontrado" })
+    }
+    relato.confirmacoes++
+
+    await axios.post('http://localhost:10000/eventos', {
+        tipo: 'RelatoConfirmado',
+        dados: {
+            id: relato.id,
+            avistamentoId: relato.avistamentoId,
+            confirmacoes: relato.confirmacoes
+        }
+    })
+    res.status(200).send(relato)
+})
+
 const port = 4100
 app.listen(port, () => console.log(`Relatos. Porta 4100.`))
